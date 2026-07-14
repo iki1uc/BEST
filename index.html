@@ -1,31 +1,117 @@
-BEST – SCORE‑SYSTEM
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>BEST · Score‑System · iki1uc</title>
 
-OCTACORE‑BEST:
-TMP‑BEST
-LAGE‑BEST
-AXIS‑BEST
-PIPE‑BEST
-FORM = Octaeder / Score
+<style>
+body { background:#000; color:#0f0; font-family:Consolas; padding:20px; }
+h1, h2 { color:#6cf; }
+pre { background:#111; border:1px solid #333; padding:12px; }
+a { color:#6cf; display:block; margin:6px 0; }
+canvas { background:#111; border:1px solid #333; margin-top:20px; }
+section { margin-bottom:40px; }
+</style>
+</head>
 
-BEST‑STATIONEN:
-ID
-RESPO
-LAGE
-SCAN
-360°
-6e
-ORT
-BEST‑SCORE
-BEST‑MATRIX
-BEST‑ORBIT
-BEST‑IDENTITY
+<body>
 
-BEST‑KERN:
-CORE = iki1uc
-VERSION = 1.0
-CODE = RAW‑BEST
-LAGE = BEST / Score‑System
-STATUS = Aktiv
+<h1>BEST · Score‑System · iki1uc</h1>
+
+<pre>
+CORE     = iki1uc
+VERSION  = 1.0
+CODE     = RAW‑BEST
+LAGE     = BEST / Score‑System
+STATUS   = Aktiv
 IDENTITY = Score‑Identität
-SCORE = BEST‑SCORE
-MATRIX = BEST‑Kreuz‑Matrix
+SCORE    = BEST‑SCORE
+MATRIX   = BEST‑Kreuz‑Matrix
+FORM     = Octaeder / Score
+AXIS     = BEST‑Axis
+PIPE     = BEST‑Pipe
+TMP      = BEST‑TMP
+READY    = 100%
+</pre>
+
+<section>
+<h2>BEST‑Stationen</h2>
+<a href="./ID.html">ID · Identität</a>
+<a href="./RESPO.html">RESPO · Systemkern</a>
+<a href="./LAGE.html">LAGE · Position</a>
+<a href="./SCAN.html">SCAN · Gesetz‑Scan</a>
+<a href="./360.html">360° · Orbit</a>
+<a href="./6e.html">6e · Energie</a>
+<a href="./ORT.html">ORT · Raum</a>
+<a href="./BEST-SCORE.html">BEST‑SCORE</a>
+<a href="./BEST-MATRIX.html">BEST‑Matrix</a>
+<a href="./BEST-ORBIT.html">BEST‑Orbit</a>
+<a href="./BEST-IDENTITY.html">BEST‑Identität</a>
+</section>
+
+<section>
+<h2>BEST · Octaeder‑Score‑Renderer</h2>
+<canvas id="bestCanvas" width="500" height="500"></canvas>
+</section>
+
+<script>
+// --- BEST SCORE RENDERER ---
+const c = document.getElementById("bestCanvas");
+const x = c.getContext("2d");
+
+let t = 0;
+
+function drawBEST() {
+    x.clearRect(0,0,500,500);
+
+    // --- Octaeder (8 Punkte) ---
+    const R = 150;
+    const oct = [];
+    for(let i=0;i<8;i++){
+        const a = t + i*Math.PI/4;
+        oct.push([250 + Math.cos(a)*R, 250 + Math.sin(a)*R]);
+    }
+
+    x.strokeStyle = "#6cf";
+    x.lineWidth = 3;
+    x.beginPath();
+    oct.forEach(([px,py],i)=>{
+        if(i===0) x.moveTo(px,py);
+        else x.lineTo(px,py);
+    });
+    x.closePath();
+    x.stroke();
+
+    // --- BEST‑Score Balken ---
+    x.fillStyle = "#0f0";
+    x.fillRect(50,480,400*(0.5+Math.sin(t)/2),10);
+
+    // --- BEST‑Matrix (6×6) ---
+    for(let i=0;i<6;i++){
+        for(let j=0;j<6;j++){
+            x.fillStyle = (Math.sin(t+i+j)>0) ? "#0f0" : "#030";
+            x.fillRect(50+i*50,50+j*50,40,40);
+        }
+    }
+
+    // --- BEST‑Orbit ---
+    x.strokeStyle = "#f90";
+    x.lineWidth = 2;
+    x.beginPath();
+    x.arc(250,250,200 + Math.sin(t*2)*10,0,Math.PI*2);
+    x.stroke();
+
+    // --- OCTACORE Blink ---
+    if(Math.sin(t*3) > 0.8){
+        x.fillStyle = "#f00";
+        x.fillRect(10,10,20,20);
+    }
+
+    t += 0.02;
+    requestAnimationFrame(drawBEST);
+}
+drawBEST();
+</script>
+
+</body>
+</html>
